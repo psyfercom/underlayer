@@ -1,54 +1,76 @@
-# **UnderLayer - Substrate-Based EVM Blockchain Template**
+# Substrate Frontier Node Template
 
-The **Underlayer Node Template** offers a robust and versatile foundation for building and experimenting with Substrate-based chains featuring Ethereum Virtual Machine (EVM) compatibility. Leveraging the FRAME framework, Underlayer provides significant advantages for developers experienced in both Substrate and Ethereum ecosystems.
+A [FRAME](https://docs.substrate.io/v3/runtime/frame/)-based
+[Substrate](https://substrate.dev/en/) node with the Ethereum RPC support, ready for hacking
+:rocket:
 
-## **Origins and Development: A Foundation for Innovation**
+## Generation & Upstream
 
-Actively maintained as part of the Frontier project, the Underlayer Node Template ensures ongoing updates and community support. Its modular design simplifies the creation of standalone templates for independent projects using a provided script. Ready-to-use versions are available on the `substrate-developer-hub/frontier-node-template` repository, updated with each Frontier release.  Underlayer builds upon the Substrate Node Template, enhancing it with crucial EVM integration.  For detailed information on core features and functionalities, consult the Substrate Node Template documentation.  In-depth guidance and practical examples are readily available through the comprehensive tutorials on the Substrate Developer Hub.
+This template is maintained in the
+[Frontier](https://github.com/paritytech/frontier/tree/master/template) project repository, and can
+be used to generate a stand-alone template for use in an independent project via the included
+[template generation script](https://github.com/paritytech/frontier/blob/master/docs/node-template-release.md).
 
-## **Building and Running Underlayer: A Streamlined Workflow**
+A ready-to-use template generated this way is hosted for each Frontier release on the
+[substrate-developer-hub/frontier-node-template](https://github.com/substrate-developer-hub/frontier-node-template)
+repository.
 
-Building and running Underlayer is designed for efficiency.  Execute these commands from your project's root directory:
+This template was originally forked from the
+[Substrate Node Template](https://github.com/substrate-developer-hub/substrate-node-template). You
+can find more information on features on this template there, and more detailed usage on the
+[Substrate Developer Hub Tutorials](https://substrate.dev/tutorials/) that use this heavily.
+
+## Build & Run
+
+To build the chain, execute the following commands from the project root:
 
 ```
 $ cargo build --release
 ```
 
-# **To start your Underlayer node:**
+To execute the chain, run:
 
 ```
 $ ./target/debug/frontier-template-node --dev
 ```
 
-Underlayer supports manual sealing, offering granular control over block production via RPC. This capability is particularly valuable for testing and development scenarios. Automated tests (ts-tests) utilize this functionality:
+The node also supports to use manual seal (to produce block manually through RPC).  
+This is also used by the ts-tests:
 
 ```
 $ ./target/debug/frontier-template-node --dev --manual-seal
 ```
 
-# **Docker Integration: Optimizing Your Development Environment**
+### Docker Based Development
 
-For streamlined development, consider using Docker. The provided Dockerfile prioritizes rapid build and execution times. Importantly, only the node's binaries are recompiled on each run, drastically reducing build times compared to a full dependency rebuild.
+Optionally, You can build and run the frontier node within Docker directly.  
+The Dockerfile is optimized for development speed.  
+(Running the `docker run...` command will recompile the binaries but not the dependencies)
 
-Build the Docker image (expect a build time of 5-10 minutes):
+Building (takes 5-10 min):
 
 ```bash
 docker build -t frontier-node-dev .
 ```
 
-Run the Docker container (binary recompilation takes about a minute):
+Running (takes 1 min to rebuild binaries):
 
 ```bash
 docker run -t frontier-node-dev
 ```
 
-# **Genesis Configuration: A Pre-configured Development Starting Point**
+## Genesis Configuration
 
-When you start a development chain [using this guide](https://github.com/substrate-developer-hub/substrate-node-template#run),  a pre-funded EVM account named Alice will be available.  You can find details about Alice's account using the Polkadot UI [here](https://polkadot.js.org/apps/#?rpc=ws://127.0.0.1:9944).
-
-To view this EVM account, open the Polkadot UI's `Settings` app under the `Developer` tab.  Configure the EVM `Account` type as shown below.  You'll also need to define `Address` and `LookupSource` to send transactions and `Transaction` and `Signature` to inspect blocks.  Note that Alice's account is a well-known key, as described [in this Substrate documentation](https://substrate.dev/docs/en/knowledgebase/integrate/subkey#well-known-keys).
-
-
+The development [chain spec](node/src/chain_spec.rs) included with this project defines a genesis
+block that has been pre-configured with an EVM account for
+[Alice](https://substrate.dev/docs/en/knowledgebase/integrate/subkey#well-known-keys). When
+[a development chain is started](https://github.com/substrate-developer-hub/substrate-node-template#run),
+Alice's EVM account will be funded with a large amount of Ether. The
+[Polkadot UI](https://polkadot.js.org/apps/#?rpc=ws://127.0.0.1:9944) can be used to see the details
+of Alice's EVM account. In order to view an EVM account, use the `Developer` tab of the Polkadot UI
+`Settings` app to define the EVM `Account` type as below. It is also necessary to define the
+`Address` and `LookupSource` to send transaction, and `Transaction` and `Signature` to be able to
+inspect blocks:
 
 ```json
 {
@@ -82,8 +104,6 @@ EVM account ID (`0xd43593c715fdd31c61141abd04a99fd6822c8558`); the value that is
 x: eth.getBalance
 340,282,366,920,938,463,463,374,607,431,768,211,455
 ```
- 
-A strong understanding of EVM account management is critical for effective chain interaction.
 
 > Further reading:
 > [EVM accounts](https://github.com/danforbes/danforbes/blob/master/writings/eth-dev.md#Accounts)
@@ -91,9 +111,10 @@ A strong understanding of EVM account management is critical for effective chain
 Alice's EVM account ID was calculated using
 [an included utility script](utils/README.md#--evm-address-address).
 
-# **Advanced Example: Deploying and Interacting with an ERC-20 Contract**
+## Example 1: ERC20 Contract Deployment using EVM dispatchable
 
-This section demonstrates deploying and using an ERC-20 contract via EVM dispatchable functionality, showcasing practical smart contract interaction within the Underlayer chain.
+The following steps are also available as a [Typescript script](examples/contract-erc20) using
+Polkadot JS SDK
 
 ### Step 1: Contract creation
 
